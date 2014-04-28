@@ -1,3 +1,4 @@
+import model.{DataWrapper, Data}
 import spray.routing.Directives
 import scala.concurrent.ExecutionContext
 import spray.httpx.Json4sSupport
@@ -16,12 +17,24 @@ class LabService()(implicit executionContext: ExecutionContext)
 
   val route =
     get {
-      pathPrefix("problems") {
+      pathPrefix("data") {
         pathEnd {
           complete {
-            ""
+            DataWrapper(Data(1, "int", "2"))
+          }
+        }
+      }
+    } ~post {
+      pathPrefix("problems") {
+        pathEnd {
+          entity(as[DataWrapper]) {
+            wrapper: DataWrapper =>
+              log.debug(wrapper.toString)
+            unexpected =>
+              log.debug(s"unexpected message: $unexpected")
           }
         }
       }
     }
 }
+
