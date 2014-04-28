@@ -21,8 +21,6 @@ trait BootedCore extends Core {
    */
   implicit lazy val system: ActorSystem = ActorSystem("sim", config)
 
-  implicit lazy val repository: ProblemRepository = ProblemRepository()
-
   def config: Config
 
   /**
@@ -38,10 +36,6 @@ trait BootedCore extends Core {
  */
 trait CoreActors {
   this: Core =>
-
-  implicit def frontend: ActorRef
-  lazy val problem = system.actorOf(Props(classOf[ProblemActor], frontend, repository))
-  lazy val planActor = system.actorOf(Props(classOf[PlanActor], frontend, repository))
 }
 
 trait Request {

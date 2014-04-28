@@ -1,5 +1,3 @@
-import core.{CoreActors, Core}
-import api.Api
 import akka.io.IO
 import spray.can.Http
 import util.Properties
