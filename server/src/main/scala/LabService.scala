@@ -1,4 +1,5 @@
 import model.{DataWrapper, Data}
+import spray.http.StatusCodes
 import spray.routing.Directives
 import scala.concurrent.ExecutionContext
 import spray.httpx.Json4sSupport
@@ -24,14 +25,20 @@ class LabService()(implicit executionContext: ExecutionContext)
           }
         }
       }
-    } ~post {
-      pathPrefix("problems") {
+    } ~ post {
+      pathPrefix("data") {
         pathEnd {
           entity(as[DataWrapper]) {
-            wrapper: DataWrapper =>
-              log.debug(wrapper.toString)
-            unexpected =>
-              log.debug(s"unexpected message: $unexpected")
+            request => {
+              try {
+                log.debug(request.toString)
+                complete((StatusCodes.Created, request))
+              } catch {
+                case e: RuntimeException =>
+                  log.error(e.getStackTraceString)
+                  complete(StatusCodes.BadRequest)
+              }
+            }
           }
         }
       }
